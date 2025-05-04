@@ -1,105 +1,120 @@
-// Main.cpp
-#include "SquareMat.h"
-#include <iostream>
+/*  Author: <Thelet.Shevach@gmail.com>
+ *  Main.cpp – Demonstration of SquareMat library features.
+ */
 
-using mat::SquareMat;
-
-int main() {
-    // Build A (3×3 from string) and B (3×3 filled with 1.0)
-    SquareMat A = SquareMat::from_string("1 2 3, 4 5 6, 7 8 9");
-    SquareMat B(3, 1.0);
-    SquareMat C = SquareMat::from_string("3 0 1 2 4, 1 4 2 1 1, 2 3 5 -6 3, 4 2 4 2 7, 1 2 4 0 2");
-
-    // Each std::cout << M << "\n" uses operator<< row-by-row
-    std::cout << "Matrix A:\n"
-              << A << "\n\n";
-
-    std::cout << "Matrix B:\n"
-              << B << "\n\n";
-    
-    B[1][2] = 42.0;
-    
-    std::cout << "Matrix B after changing the cell at [1][2]:\n"
-              << B << "\n\n";
-
-    std::size_t row = 1, col = 2;      // zero-based indices
-    double value = A[row][col];        // retrieves the element at (1,2)
-          
-    std::cout << "A[" << row << "][" << col << "] = "
-              << value << std::endl;
-    
-    std::cout << "A + B:\n"
-              << (A + B) << "\n\n";
-
-    std::cout << "A % 5:\n"
-              << (A % 5) << "\n\n";
-    A %= 5;
-    std::cout << "A after A %= 5:\n"
-              << A << "\n\n";
-    
-    std::cout << "A % B:\n"
-              << (A % B) << "\n\n";
-    A %= B;
-    std::cout << "A after A %= B:\n"
-              << A << "\n\n";
-
-    std::cout << "A * B:\n"
-              << (A * B) << "\n\n";
-
-    std::cout << "A ^ 2:\n"
-              << (A ^ 2) << "\n\n";
-
-    std::cout << "det(A) = " << !A << "\n";
-    std::cout << "det(C) = " << !C << "\n";
-
-    if (A >= B) {
-        std::cout << "A is greater-or-equal to B ("
-                  << A.total() << " ≥ " << B.total() << ")\n";
-    }
-    else{
-        std::cout << "B is greater-or-equal to A("
-        << B.total() << " ≥ " << A.total() << ")\n";
-    }
-
-    A[2][2] +=5;
-    std::cout << "After A[2][2] += 5\n" << A << "\n\n";
-
-    if (A == B) {
-        std::cout << "A is-equal to B ("
-                  << A.total() << " = " << B.total() << ")\n";
-    }
-    else{
-        std::cout << "A is not equal to B("
-        << A.total() << " !=" << B.total() << ")\n";
-    }
-
-    A += 2;
-    std::cout << "After A += 2:\n" << A << "\n\n";
-    
-    // 2) Compound assignment: subtract B from A in-place
-    A -= B;  // now A = [1 2;3 4] – [0 1;1 0] = [1 1;2 4]
-    std::cout << "After A -= B:\n" << A << "\n\n";
-
-    // Multiply A by itself
-    A *= A;  // matrix-multiply: A = A × A
-    std::cout << "After A *= A:\n" << A << "\n\n";
-
-    // Scale by 0.5
-    A *= 0.5;  // every cell halved
-    std::cout << "After A *= 0.5:\n" << A << "\n\n";
-
-    // 3) Increment / decrement
-    ++A;    // add 1 to every cell (pre-increment)
-    std::cout << "After ++A:\n" << A << "\n\n";
-
-    A++;    // post-increment (old value returned, but mutated)
-    std::cout << "After A++:\n" << A << "\n\n";
-
-    --A;    // pre-decrement
-    std::cout << "After --A:\n" << A << "\n\n";
-
-    A--;    // post-decrement
-    std::cout << "After A--:\n" << A << "\n\n";
-
-    return 0;
-}
+ #include "SquareMat.h"
+ #include <iostream>
+ #include <iomanip>
+ 
+ using mat::SquareMat;
+ 
+ //------------------------------------------------------------------------------
+ // Helper: Print a section header and matrix
+ //------------------------------------------------------------------------------
+ void printMatrixSection(const std::string& title, const SquareMat& M) {
+     std::cout << "=== " << title << " ===\n";
+     std::cout << M << "\n";
+ }
+ 
+ int main() {
+     // --------------------------------------------------------------------------
+     // 1) Construct matrices
+     // --------------------------------------------------------------------------
+     SquareMat A = SquareMat::from_string("1 2 3, 4 5 6, 7 8 9");
+     SquareMat B(3, 1.0);
+     SquareMat C = SquareMat::from_string(
+         "3 0 1, 2 4 1, 4 2 1");  // custom 3×3 matrix
+ 
+     printMatrixSection("Matrix A (from_string)", A);
+     printMatrixSection("Matrix B (3×3 filled with 1.0)", B);
+     printMatrixSection("Matrix C (custom 3×3)", C);
+ 
+     // --------------------------------------------------------------------------
+     // 2) Element access & update
+     // --------------------------------------------------------------------------
+     B[1][2] = 42.0;
+     printMatrixSection("B after B[1][2] = 42", B);
+ 
+     std::size_t row = 1, col = 2;
+     double val = A[row][col];
+     std::cout << "A[" << row << "][" << col << "] = "
+               << val << "\n\n";
+ 
+     // --------------------------------------------------------------------------
+     // 3) Basic arithmetic operations
+     // --------------------------------------------------------------------------
+     printMatrixSection("A + B",        A + B);
+     printMatrixSection("A % 5",        A % 5);
+ 
+     SquareMat D = A; D %= 5;
+     printMatrixSection("D = A; D %= 5", D);
+ 
+     printMatrixSection("A % B",        A % B);
+     D = A; D %= B;
+     printMatrixSection("D = A; D %= B", D);
+ 
+     printMatrixSection("A * B",        A * B);
+     printMatrixSection("A ^ 2",        A ^ 2);
+ 
+     // --------------------------------------------------------------------------
+     // 4) Determinants
+     // --------------------------------------------------------------------------
+     std::cout << "det(A) = " << !A << "\n"
+               << "det(C) = " << !C << "\n\n";
+ 
+     // --------------------------------------------------------------------------
+     // 5) Comparisons by sum of elements
+     // --------------------------------------------------------------------------
+     std::cout << (A >= B ? "A >= B\n" : "A < B\n");
+     std::cout << (A == B ? "A == B\n" : "A != B\n");
+     std::cout << "\n";
+ 
+     // --------------------------------------------------------------------------
+     // 6) Compound assignment examples
+     // --------------------------------------------------------------------------
+     SquareMat E = SquareMat::from_string("1 2, 3 4");
+     printMatrixSection("E initial", E);
+ 
+     E += SquareMat::from_string("2 1, 1 2");
+     printMatrixSection("E += [[2,1],[1,2]]", E);
+ 
+     E -= SquareMat::from_string("1 1, 1 1");
+     printMatrixSection("E -= [[1,1],[1,1]]", E);
+ 
+     E *= 2.0;
+     printMatrixSection("E *= 2.0", E);
+ 
+     E /= 2.0;
+     printMatrixSection("E /= 2.0", E);
+ 
+     E %= 2;
+     printMatrixSection("E %= 2", E);
+ 
+     E += 3;
+     printMatrixSection("E += 3", E);
+ 
+     E -= 1.5;
+     printMatrixSection("E -= 1.5", E);
+ 
+     // --------------------------------------------------------------------------
+     // 7) Increment / decrement operations
+     // --------------------------------------------------------------------------
+     SquareMat F = A;
+     printMatrixSection("F (copy of A)", F);
+ 
+     ++F;
+     printMatrixSection("++F (pre-increment)", F);
+ 
+     F++;
+     printMatrixSection("F++ (post-increment)", F);
+ 
+     --F;
+     printMatrixSection("--F (pre-decrement)", F);
+ 
+     F--;
+     printMatrixSection("F-- (post-decrement)", F);
+ 
+     return 0;
+ }
+ 
+ 

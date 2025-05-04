@@ -145,4 +145,3 @@ Each operation is presented with a labeled section for clarity.
 ---
 
 **Enjoy exploring** the `SquareMat` library! Feel free to fork & extend.
-
