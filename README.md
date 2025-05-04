@@ -1,6 +1,6 @@
 # SquareMat — Comprehensive Square Matrix Library
 
-**Author:** `<your-mail@example.com>`
+**Author:** Thelet.Shevach@gmail.com
 
 ## 📜 Overview
 
